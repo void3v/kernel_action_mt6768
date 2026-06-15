@@ -296,6 +296,13 @@ jobs:
             exit 1
         fi
 
+    - name: Get Modules
+      if: env.CHECK_FILE_IS_OK == 'true'
+      run: |
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        mkdir -p modules
+        find out -name "*.ko" -exec cp {} modules/ \;
+
     - name: Upload AnyKernel3
       if: env.CHECK_FILE_IS_OK == 'true'
       uses: actions/upload-artifact@v4
@@ -323,3 +330,10 @@ jobs:
       with:
         name: boot${{ env.LOCALVERSION }}${{ env.UPLOADNAME }}-${{ env.DEVICE }}-${{ env.BUILD_TIME }}
         path: kernel_workspace/boot.img
+
+    - name: Upload Modules
+      if: env.CHECK_FILE_IS_OK == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: modules-${{ env.DEVICE }}
+        path: kernel_workspace/android-kernel/modules/*
