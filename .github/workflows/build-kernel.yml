@@ -3,12 +3,11 @@ on:
   workflow_dispatch:
     inputs:
       select_device:
-        description: 'Select device:'
+        description: 'Select :'
         required: true
         type: choice
         options:
-        - 'lancelot'
-        - 'merlin'
+        - 'nethunter'
 
 jobs:
   build:
@@ -182,7 +181,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
         if [ ${{ env.DISABLE_CC_WERROR }} = true ]; then
-            echo "CONFIG_CC_WERROR=n" >> arch/${{ env.KERNEL_ARCH }}/configs/${DEVICE}_nethunter_defconfig
+            echo "CONFIG_CC_WERROR=n" >> arch/${{ env.KERNEL_ARCH }}/configs/${DEVICE}_defconfig
         fi
         if [ ${{ env.FIX_WIFI_SPEED }} = true ]; then
             rm -rf drivers/misc/mediatek/connectivity
@@ -216,7 +215,7 @@ jobs:
         fi
         export KBUILD_BUILD_HOST=Github-Action
         export KBUILD_BUILD_USER=$(echo ${{ github.actor }} | tr A-Z a-z)
-        make -j$(nproc --all) CC=clang O=out ARCH=${{ env.KERNEL_ARCH }} ${{ env.EXTRA_CMDS }} ${DEVICE}_nethunter_defconfig
+        make -j$(nproc --all) CC=clang O=out ARCH=${{ env.KERNEL_ARCH }} ${{ env.EXTRA_CMDS }} ${DEVICE}_defconfig
         if [ ${{ env.ENABLE_CCACHE }} = true ]; then
             if [ ${{ env.USE_GCC }} = true ]; then
                 make -j$(nproc --all) CC="ccache gcc" O=out ARCH=${{ env.KERNEL_ARCH }} ${{ env.EXTRA_CMDS }}
